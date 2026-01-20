@@ -1,12 +1,16 @@
 import torch
 import yaml
 import numpy as np
-from transformers import AutoModelForCausalLM, TrainingArguments, Trainer
+import os
+from transformers import AutoModelForCausalLM, TrainingArguments, Trainer, AutoTokenizer, DataCollatorForLanguageModeling    
 from peft import LoraConfig, get_peft_model
-from utils.helpers import get_specific_target_modules 
+from utils.helpers import get_specific_target_modules
 from data.loader import get_dataloaders
+os.environ["WANDB_DISABLED"] = "true"
 
 def main():
+    
+
     with open("config.yaml", "r") as f:
         cfg = yaml.safe_load(f)
         
@@ -18,32 +22,31 @@ def main():
 
     print(f"Fine-tuning on {len(selected_indices)} layers: {selected_indices}")
 
-    # Setup Specific Target Modules
     target_modules = get_specific_target_modules(
         selected_indices, 
         cfg['lora']['target_modules']
     )
-    
-    print(f"Example targets: {target_modules[:3]}")
+
+    tokenizer = AutoTokenizer.from_pretrained(cfg['model']['name'])
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
 
     base_model = AutoModelForCausalLM.from_pretrained(
         cfg['model']['name'],
-        dtype=torch.bfloat16,  
+        dtype=torch.bfloat16,
         device_map="auto"
     )
 
     peft_config = LoraConfig(
         r=cfg['lora']['r'],
         lora_alpha=cfg['lora']['lora_alpha'],
-        target_modules=target_modules, 
+        target_modules=target_modules,
         lora_dropout=cfg['lora']['lora_dropout'],
         bias="none",
         task_type="CAUSAL_LM"
     )
     
     model = get_peft_model(base_model, peft_config)
-    
-    # verify Flexora 
     model.print_trainable_parameters()
     
     train_loader, _ = get_dataloaders(
@@ -52,6 +55,9 @@ def main():
         cfg['search']['max_length']
     )
     
+
+    data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
+
     args = TrainingArguments(
         output_dir="./flexora_output",
         num_train_epochs=cfg['finetune']['epochs'],
@@ -59,13 +65,15 @@ def main():
         per_device_train_batch_size=cfg['finetune']['batch_size'],
         logging_steps=10,
         bf16=True,
-        save_strategy="epoch"
+        save_strategy="epoch",
+        report_to="none" 
     )
     
     trainer = Trainer(
         model=model,
         args=args,
-        train_dataset=train_loader.dataset, 
+        train_dataset=train_loader.dataset,
+        data_collator=data_collator,   
     )
     
     print(">>> Starting Fine-Tuning Stage...")
