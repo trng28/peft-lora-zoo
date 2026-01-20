@@ -1,4 +1,4 @@
-## Repo
+## Implementation
 ```
 git clone https://github.com/trng28/peft-lora-quantization
 cd peft-lora-quantization/algorithms/flexora
@@ -8,7 +8,7 @@ cd peft-lora-quantization/algorithms/flexora
 pip install -r requirements.txt
 ```
 
-## Search Layer for fine-tuning stage
+## Search layer for fine-tuning stage
 ```
 python main.py
 ```
