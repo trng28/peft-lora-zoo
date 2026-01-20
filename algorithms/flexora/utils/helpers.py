@@ -25,7 +25,6 @@ def get_specific_target_modules(selected_layer_indices, target_suffixes):
             # Llama-3.2:
             # Attention: model.layers.{i}.self_attn.{q_proj}
             # MLP:       model.layers.{i}.mlp.{gate_proj}
-            
             if suffix in ["q_proj", "k_proj", "v_proj", "o_proj"]:
                 targets.append(f"layers.{i}.self_attn.{suffix}")
             elif suffix in ["gate_proj", "up_proj", "down_proj"]:
@@ -36,16 +35,5 @@ def get_specific_target_modules(selected_layer_indices, target_suffixes):
     return targets
 
 
-
-# def get_specific_target_modules(selected_layer_indices, target_suffixes):
-#     """
-#     Generates the list of specific module names for Stage 2 Fine-tuning.
-#     """
-#     # Format for Llama: "model.layers.{i}.self_attn.{suffix}"
-#     targets = []
-#     for i in selected_layer_indices:
-#         for suffix in target_suffixes:
-#             targets.append(f"layers\.{i}\..*{suffix}")
-#     return targets
 
 
