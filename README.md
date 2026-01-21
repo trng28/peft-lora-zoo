@@ -5,6 +5,7 @@
 | ---------------------------------------------------------------------------------------------------------------- | -------- |
 |[**SliM-LLM: Salience-Driven Mixed-Precision Quantization for Large Language Models**](https://openreview.net/forum?id=PO9bBEPNWy)|ICML'25|
 |[**MLWQ: Efficient Small Language Model Deployment via Multi-Level Weight Quantization**](https://aclanthology.org/2025.emnlp-main.408.pdf)|EMNLP'25|
+|[**L4Q: Parameter Efficient Quantization-Aware Fine-Tuning on Large Language Models**](https://aclanthology.org/2025.acl-long.99.pdf)|ACL'25|
 |[**Flexora: Flexible Low-Rank Adaptation for Large Language Models**](https://aclanthology.org/2025.acl-long.713.pdf)|ACL'25|
 | [**DenseLoRA: Dense Low-Rank Adaptation of Large Language Models**](https://aclanthology.org/2025.acl-long.503/) | ACL'25 |
 | [**BeamLoRA: Beam-Constraint Low-Rank Adaptation**](https://aclanthology.org/2025.acl-long.582.pdf) | ACL'25 |
